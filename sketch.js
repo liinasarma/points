@@ -1,71 +1,78 @@
-
 let x;
 let y;
-//point = [];
-let point;
 let speed;
 let proximity;
-
-
-function setup(){
-createCanvas(1200, 800);
-
-
-//for(let i = 0; i<200; i++){
-//
-//point.push(new Points(random(0,1200), random(0,800)));
-//
-//}
+other = [];
+points = [];
 
 
 
+function setup() {
+  createCanvas(1200, 600);
+  for (let i = 0; i < 200; i++) {
+    points.push(new Points(random(0,1200),random(0,600), 0.02, 40));
 
-
+  }
 }
 
-function draw(){
 
-background(150);
-//for(let i = 0; i<point.length; i++){
-//
-//point[i].display();
-//
-//}
-point = new Points(random(0,1200), random(0,800), 0.02, 50);
+function draw() {
+background(0);
+strokeWeight(1);
+stroke(150,30,100);
+fill(150,30,100, 50)
 
-point.display();
-point.update();
+// for (let i = 0; i < points.length; i++) {
+//   points[i].display();
+// }
 
 
+for (let i = 0; i < points.length; i++) {
+
+//1.SOLIS - NEKUSTĪGI OBJEKTI
+
+points[i].update();
+
+//2.SOLIS - KUSTĪGI OBJEKTI
+
+for (let j = 0; j < points.length; j++) {
+if (i != j && points[i].isNear(points[j])) {
+line(points[i].x, points[i].y, points[j].x, points[j].y);
+points[i].display();
+}
+}
 }
 
+}
 class Points{
+  constructor(x, y, speed, proximity){
 
-constructor(x, y, speed, proximity){
-this.x = x;
-this.y = y;
-this.speed = speed;
-this.proximity = proximity;
-this.xoff = random(5000);
-this.yoff = random(5000);
+  this.x = x;
+  this.y = y;
+  this.speed = speed;
+  this.proximity = proximity;
+  this.xoff = random(50000);
+  this.yoff = random(50000);
+  }
 
-}
+  display(){
+  fill(255, 30);
+  ellipse(this.x,this.y, 8, 8);
+  }
 
-display(){
 
-fill(150,30,100,50);
-noStroke();
-ellipse(this.x, this.y, 10,10);
-
-}
-
-update(){
+update() {
 this.x = noise(this.xoff) * (height);
-this.x +=width/4;
+this.x += width/4; // this is here just to offset (to "center") the x coordinate.
 this.xoff += this.speed;
 this.y = noise(this.yoff) * (height);
-this.yoff +=this.speed;
-
+this.yoff += this.speed;
 }
+
+isNear(other) {
+let d = dist(this.x, this.y, other.x, other.y);
+return d < this.proximity;
+}
+
 
 }
